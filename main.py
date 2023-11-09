@@ -23,8 +23,15 @@ if (__name__ == "__main__"):
     help = f"[int] Amount of packages to appear on the ranking. Default: 10"
     args.add_argument("-n", "--top", type = int, default = 10, help = help)
 
+    # Third named parameter: whether to store .
+    help = f"[flag] Whether to store the \"package-filenames\" JSON in temp folder."
+    args.add_argument("-j", "--json", action = "store_true", help = help)
+
     # Parse specified arguments in the given order.
-    arch, top = args.parse_args().__dict__.values()
+    args = args.parse_args()
+    arch = getattr(args, "arch")
+    top = getattr(args, "top")
+    flag = getattr(args, "json")
 
     # Instantiate the core class and get the ranking.
     print("Please wait a few moments...")
@@ -55,3 +62,6 @@ if (__name__ == "__main__"):
         print(package.ljust(max_width), count)
 
     print(SEPARATOR)
+
+    if flag: # If JSON flag enabled, store JSON in temp folder.
+        obj.save_package_json(f"./temp/pack-files-{obj.arch}.json")
