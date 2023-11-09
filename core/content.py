@@ -23,6 +23,7 @@ class DebianContentIndex(DebianDownloader):
      - "`list_archs`" (property, `list`) to get the architectures that are available on directory.
      - "`table_file_packs`" (property, `Series`) to get a table of existent files and which packages they belong to.
      - "`table_pack_files`" (property, `Series`) to get a table of existent packages and which files do they include.
+     - "`save_package_json`" (method, `None`) to store the latter "`table_pack_files`" element into a json file.
      - "`get_ranking`" (method, `Series`) to get a ranking of the packages with the most files included.\n
     For more info visit:
      - Help and definitions: "https://wiki.debian.org/RepositoryFormat#A.22Contents"
@@ -117,6 +118,22 @@ class DebianContentIndex(DebianDownloader):
         pack_files = file_packs.explode().reset_index()
         # Get a table of one row per package, and all of its associated files.
         return pack_files.groupby("packages")["filename"].apply(list)
+    
+    #▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+    def save_package_json(self, json_save: str = None):
+        """
+        Turn the "package -> filenames" table into a json (`str: list`) file.\n
+        Inputs:
+        - `json_save` (`str`): The relative path where the json file will be saved in.\n
+        """
+        if json_save is None: # Use arch as filename.
+            json_save = f"./temp/packages_{self._arch}.json"
+        # Convert the table into a dictionary.
+        packages = self._table_pack_files.to_dict()
+        # Create the destination file.
+        with open(json_save, "w", errors = "ignore") as file:
+            json.dump(packages, file, indent = 4) # Save to json.
+            print(f"Saved \"{self._filename}\" to \"{json_save}\".")
 
     #▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
     @property
@@ -156,5 +173,6 @@ class DebianContentIndex(DebianDownloader):
     
 if (__name__ == "__main__"):
 
-    obj = DebianContentIndex("i386")
+    obj = DebianContentIndex()
     print(obj.get_ranking(10))
+    obj.save_package_json()

@@ -160,3 +160,5 @@ cython_debug/
 #.idea/
 
 temp/test_content_sample.txt
+temp/test_json_sample.json
+temp/test_json_verify.json

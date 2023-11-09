@@ -29,14 +29,29 @@ if (__name__ == "__main__"):
     # Instantiate the core class and get the ranking.
     print("Please wait a few moments...")
     obj = DebianContentIndex(arch = arch)
+    ranking = obj.get_ranking(top = top)
 
     print(SEPARATOR)
     # Some early verbose.
-    print("Ranking of the largest top 10 packages in the Debian",
-      f"distribution for the given architecture: \"{obj.arch}\"")
+    print(f"Ranking of the largest top {top} packages in the Debian",
+          f"distribution for the given architecture: \"{obj.arch}\"")
     print("(based on file count - amount of files in package)")
 
-    # ranking = obj.get_ranking(top = top) # To be implemented soon.
+    # Get the longest package name and later left-justify based on it.
+    # Print the header for the future table, and add space to right.
+    max_width = ranking.index.str.len().max()
+    headers = ("Package name", "File count")
+    ul, ur = list(map(len, headers))
+    mid_gap_len = max_width - ul + 1
 
-    print("Coming soon...!")
+    # Just a fancy header for the table...
+    line_1 = ("%s" + mid_gap_len * " " + "%s") % headers
+    line_2 = ("‾" * ul) + (mid_gap_len * " ") + ("‾" * ur)
+    print("", line_1, line_2, sep = "\n")
+
+    # Print the ranking, row by row in descending order.
+    for package, count in ranking.items():
+        # Package name shall be left-justified.
+        print(package.ljust(max_width), count)
+
     print(SEPARATOR)
