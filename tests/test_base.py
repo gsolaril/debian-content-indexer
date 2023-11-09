@@ -12,7 +12,6 @@ class TestDebianDownloader(TestCase):
     """Test case for "`DebianDownloader`" class."""
 
     invalid_file = "Contents-invalid.gz"
-    sample_archs = ["amd64", "arm64", "armel", "armhf"]
     sample_files = [sample_file := "Contents-amd64.gz",
               "Contents-arm64.gz", "Contents-armel.gz",
               "Contents-armhf.gz", "Contents-i386.gz" ]
@@ -87,16 +86,6 @@ class TestDebianDownloader(TestCase):
         # Both contents should be identical (though can fail if mirror was updated)
         msg_fail = f"Sample content does not match the one in \"{self.path_verify}\"."
         self.assertEqual(content_sample_short, content_verify, msg = msg_fail)
-
-#█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
-#████████████████████████████████████████████████████████████████████████████████████████████████   Main class tests   ███
-#█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
-
-class TestDebianContentIndex(TestCase):
-    """Test case for "`DebianContentIndex`" class."""
-
-    def setUp(self):
-        self.obj = DebianContentIndex()
 
 #█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
 #███████████████████████████████████████████████████████████████████████████████████████████████████   Run all tests   ███
